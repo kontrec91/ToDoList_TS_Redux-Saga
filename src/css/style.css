@@ -1,0 +1,217 @@
+html, body {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    min-height: 100%;
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style-type: none;
+    flex-wrap: wrap;
+    font-size: 24px;
+    padding: 15px 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+.dotoApp {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    min-height: 100%;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+.header {}
+
+.header h1 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-size: 100px;
+    font-weight: 100;
+    text-align: center;
+    color: rgba(175, 47, 47, 0.15);
+    -webkit-text-rendering: optimizeLegibility;
+    -moz-text-rendering: optimizeLegibility;
+    text-rendering: optimizeLegibility;
+    margin: 0;
+}
+
+.input-goal {
+    padding: 16px;
+    border: none;
+    width: 100%;
+    font-size: 20px;
+}
+
+.header span {
+    transform: rotate(90deg);
+}
+
+.header span:before {
+    content: '❯';
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.checked {
+    color: black !important;
+}
+
+.header-task {
+    display: flex;
+    align-items: center;
+}
+
+.allComplete {
+    color: #e6e6e6;
+}
+
+.list-item {
+    padding: 0px;
+}
+
+.list-item-li-done {
+    opacity: 0.5;
+}
+
+.list-item-label-done {
+    text-decoration: line-through;
+    text-decoration-color: rgb(33, 175, 33);
+    text-decoration-thickness: 4px;
+}
+
+.text-li {
+    word-wrap: break-word;
+    width: 300px;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.set-value-li {
+    width: 100%;
+    opacity: 1 !important;
+    font: inherit;
+    padding: 15px;
+}
+
+.item-checkbox {
+    cursor: pointer;
+}
+
+input::placeholder {
+    font-size: 1.2em;
+    font-style: italic;
+}
+
+.delete {
+    visibility: hidden;
+    color: red;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+
+.item-text:hover .delete {
+    visibility: visible !important;
+}
+
+
+.footer {
+    display: flex;
+    align-items: center;
+    color: #777;
+    padding: 10px 15px;
+    height: 20px;
+    text-align: center;
+    border-top: 1px solid #e6e6e6;
+}
+
+
+button {
+    border: none;
+    background-color: inherit;
+    color: #777;
+    cursor: pointer;
+}
+
+button:hover {
+    border: 0.5px solid;
+    background-color: rgb(228, 224, 224);
+    border-radius: 5px;
+    color: inherit;
+}
+
+.active {
+    border: 0.5px solid;
+    border-radius: 5px;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: flex;
+}
+
+
+/* прячем input checkbox */
+input[type="checkbox"] {
+    display: none;
+}
+
+/* стили для метки */
+label {
+    color: #000;
+    cursor: default;
+    font-weight: normal;
+    line-height: 30px;
+    padding: 10px 0;
+    vertical-align: middle;
+}
+
+/* формируем внешний вид чекбокса в псевдоэлементе before */
+label:before {
+    content: " ";
+    color: #000;
+    display: inline-block;
+    font: 20px/30px Arial;
+    margin-right: 15px;
+    position: relative;
+    text-align: center;
+    text-indent: 0px;
+    width: 30px;
+    height: 30px;
+    background: #FFF;
+    border: 1px solid #aba9a9;
+    border-radius: 50%;
+    border-image: initial;
+    vertical-align: middle;
+}
+
+/* вариации внешнего вида в зав-ти от статуса checkbox */
+/* checked */
+
+input:checked+label:before {
+    content: "\2714";
+    color: green;
+    font-size: 25px;
+    font-weight: 400;
+}
