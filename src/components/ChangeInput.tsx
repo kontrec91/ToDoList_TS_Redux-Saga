@@ -5,9 +5,6 @@ type IProps = {
   value: string
 };
 
-// const App = (props) => {
-// export const ItemToDo<IProps> = (props: IProps) => {
-
 export const ChangeInput: FC<IProps> = (props: IProps): ReactElement=> {
 
     const [newInputValue, setNewInputValue] = useState<string>("");

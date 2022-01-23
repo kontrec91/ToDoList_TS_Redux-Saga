@@ -3,12 +3,8 @@ import React, { FC, useState, ReactElement, useEffect, useContext } from "react"
 import { ToDoContext } from "./CreateContextApp";
 
 export const TodoForm: FC = (): ReactElement => {
-// console.log(ToDoContext)
 
-  // const [ context, setState ] = useContext(ToDoContext);
   const context = useContext(ToDoContext);
-
-  console.log(context, typeof context);
 
   const { state, setState } = context;
 

@@ -1,28 +1,25 @@
-import React, {FC, ReactElement, useState, useContext } from "react";
+import React, { FC, ReactElement, useState, useContext } from "react";
 import { ChangeInput } from "./ChangeInput";
 import { ToDoContext } from "./CreateContextApp";
+import { ToDo } from "./types/Types";
 
-type IProps = {
-  item: any//item--это объект(item: Object), но код не генерит ошибку кагда item: any
-  // item: Object 
-}
+type Props = {
+  item: ToDo;
+};
 
-// const App: FC = (): ReactElement => {
-// export const ItemToDo<IProps> = (props: IProps) => {
-export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
-  // const Layout: React.FC<OwnProps> = (props: OwnProps) => {}
-
+export const ItemToDo: FC<Props> = (props: Props): ReactElement => {
   const item = props.item;
+  const itemId = String(item.id);
 
-  const [context, setContext] = useContext(ToDoContext);
-  const { todosArray } = context;
+  const { state, setState } = useContext(ToDoContext);
+  const { todosArray } = state;
 
   const [isChecked, setIsChecked] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   const checkboxHandler = () => {
-    const newArray = todosArray.map((todo: any) => {
-      if (todo.id === item.id) {//тут ошибка
+    const newArray = todosArray.map((todo: ToDo) => {
+      if (todo.id === item.id) {
         return {
           ...todo,
           isChecked: !todo.isChecked,
@@ -31,11 +28,13 @@ export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
         return todo;
       }
     });
-    setContext({
-      ...context,
+
+    setState({
+      ...state,
       todosArray: newArray,
-      isAllCompleted: !newArray.find((item: any) => !item.isChecked),
+      isAllCompleted: !newArray.find((item: ToDo) => !item.isChecked),
     });
+
     isChecked === false ? setIsChecked(true) : setIsChecked(false);
   };
 
@@ -44,9 +43,8 @@ export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
   };
 
   const handleOnBlur = (value: string) => {
-    //fix it
     if (value !== "") {
-      const newArr = todosArray.map((todo: any) => {
+      const newArr = todosArray.map((todo: ToDo) => {
         if (todo.id === item.id) {
           return {
             ...todo,
@@ -57,8 +55,8 @@ export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
         }
       });
 
-      setContext({
-        ...context,
+      setState({
+        ...state,
         todosArray: newArr,
       });
     }
@@ -66,11 +64,12 @@ export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
   };
 
   const removeItem = () => {
-    const newArray = todosArray.filter((todo: any) => todo.id !== item.id);
-    setContext({
-      ...context,
+    const newArray = todosArray.filter((todo: ToDo) => todo.id !== item.id);
+
+    setState({
+      ...state,
       todosArray: newArray,
-      isAllCompleted: !newArray.find((todo: any) => !todo.isChecked),
+      isAllCompleted: !newArray.find((todo: ToDo) => !todo.isChecked),
     });
   };
 
@@ -88,7 +87,7 @@ export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
           />
           <label
             className={item.isChecked ? "check list-item-li-done" : "check"}
-            htmlFor={item.id}
+            htmlFor={itemId}
             onClick={() => checkboxHandler()}
           ></label>
           <span

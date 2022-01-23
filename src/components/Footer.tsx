@@ -1,33 +1,36 @@
 import React, { FC, ReactElement, useContext } from "react";
 
 import { ToDoContext } from "./CreateContextApp";
+import { ToDo } from "./types/Types";
 
 export const Footer: FC = (): ReactElement => {
-  const [context, setContext] = useContext(ToDoContext);
-  const { filterType, todosArray } = context;
+
+  const {state, setState} = useContext(ToDoContext);
+  const { filterType, todosArray } = state;
 
   const showCountItems = () => {
-    const arr = todosArray.filter((item: any) => item.isChecked !== true);
+    const arr = todosArray.filter((item: ToDo) => item.isChecked !== true);
     return arr.length;
   };
 
   const showClearCompletedButton = () => {
-    const isCompleted = todosArray.some((item: any) => item.isChecked === true);
+    const isCompleted = todosArray.some((item: ToDo) => item.isChecked === true);
     return isCompleted;
   };
 
   const handleSetFilterType = (value: string) => {
-    setContext({
-      ...context,
+
+    setState({
+      ...state,
       filterType: value,
     });
   };
 
   const handlerClearCompleted = () => {
-    const fileredArr = todosArray.filter((todo: any) => todo.isChecked === false);
+    const fileredArr = todosArray.filter((todo: ToDo) => todo.isChecked === false);
 
-    setContext({
-      ...context,
+        setState({
+      ...state,
       todosArray: fileredArr,
       filterType: "All",
     });
