@@ -1,10 +1,19 @@
-import React, { useEffect, useContext, useState } from "react";
-import { ToDoContext } from "./CreateContextApp.js";
+import React, { FC, useState, ReactElement, useEffect, useContext } from "react";
 
-export const TodoForm = () => {
-  const [context, setContext] = useContext(ToDoContext);
-  const {isAllCompleted, todosArray} = context;
+import { ToDoContext } from "./CreateContextApp";
 
+export const TodoForm: FC = (): ReactElement => {
+// console.log(ToDoContext)
+
+  // const [ context, setState ] = useContext(ToDoContext);
+  const context = useContext(ToDoContext);
+
+  console.log(context, typeof context);
+
+  const { state, setState } = context;
+
+
+  const { isAllCompleted, todosArray } = state;
 
   const [charCode, setCharCode] = useState(0);
   const [itemToDoValue, setItemToDoValue] = useState("");
@@ -15,9 +24,10 @@ export const TodoForm = () => {
   });
 
   const addToDo = () => {
+    // ... = (type?) => {}
     if (charCode === 13 && itemToDoValue.trim() !== "") {
-      setContext({
-        ...context,
+      setState({
+        ...state,
         todosArray: [
           ...todosArray,
           {
@@ -34,23 +44,23 @@ export const TodoForm = () => {
 
   const handleCheckAll = () => {
     if (!isAllCompleted) {
-      const newArray = todosArray.map((item) => {
+      const newArray = todosArray.map((item: any) => {
         return { ...item, isChecked: true };
       });
-      setContext({
-        ...context,
+      setState({
+        ...state,
         todosArray: newArray,
-        isAllCompleted: !newArray.find((item) => !item.isChecked),
+        isAllCompleted: !newArray.find((item: any) => !item.isChecked),
       });
       setIsSelected(true);
     } else {
-      const newArray = todosArray.map((item) => {
+      const newArray = todosArray.map((item: any) => {
         return { ...item, isChecked: false };
       });
-      setContext({
-        ...context,
+      setState({
+        ...state,
         todosArray: newArray,
-        isAllCompleted: !newArray.find((item) => !item.isChecked),
+        isAllCompleted: !newArray.find((item: any) => !item.isChecked),
       });
       setIsSelected(false);
     }
@@ -61,9 +71,7 @@ export const TodoForm = () => {
       <h1>ToDoList</h1>
       <div className="header-task">
         <span
-          className={
-            !todosArray.length ? "allComplete hidden" : isSelected ? "allComplete checked" : "allComplete"
-          }
+          className={!todosArray.length ? "allComplete hidden" : isSelected ? "allComplete checked" : "allComplete"}
           onClick={() => handleCheckAll()}
         ></span>
         <input

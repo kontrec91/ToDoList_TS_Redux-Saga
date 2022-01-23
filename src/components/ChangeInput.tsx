@@ -1,7 +1,16 @@
-import React, {useState} from "react";
+import React, {FC, ReactElement, useState } from "react";
 
-export const ChangeInput = (props) => {
-    const [newInputValue, setNewInputValue] = useState("");
+type IProps = {
+  handleOnBlur: (arg0: string)=> void,
+  value: string
+};
+
+// const App = (props) => {
+// export const ItemToDo<IProps> = (props: IProps) => {
+
+export const ChangeInput: FC<IProps> = (props: IProps): ReactElement=> {
+
+    const [newInputValue, setNewInputValue] = useState<string>("");
 
     return (
       <input 

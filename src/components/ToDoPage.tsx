@@ -1,17 +1,17 @@
-import React from "react";
+import React, { FC, ReactElement, useContext } from "react";
+import { ToDoContext } from "./CreateContextApp";
 
-import { TodoForm } from "./TodoForm.js";
-import { Footer } from "./Footer.js";
-import { TodoList } from "./TodoList.js";
+import { TodoForm } from "./TodoForm";
+import { Footer } from "./Footer";
+import { TodoList } from "./TodoList";
 
+export const ToDoPage: FC = (): ReactElement => {
 
-export const ToDoPage = () => {
-  
   return (
-      <section className="dotoApp">
-        <TodoForm />
-        <TodoList />
-        <Footer />
-      </section>
+    <section className="dotoApp">
+      <TodoForm />
+      {/* <TodoList /> */}
+      {/* <Footer /> */}
+    </section>
   );
 };

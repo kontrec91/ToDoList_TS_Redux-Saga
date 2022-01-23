@@ -1,9 +1,18 @@
-import React, { useState, useContext } from "react";
+import React, {FC, ReactElement, useState, useContext } from "react";
 import { ChangeInput } from "./ChangeInput";
-import { ToDoContext } from "./CreateContextApp.js";
+import { ToDoContext } from "./CreateContextApp";
 
-export const ItemToDo = (props) => {
-  const item = props.item
+type IProps = {
+  item: any//item--это объект(item: Object), но код не генерит ошибку кагда item: any
+  // item: Object 
+}
+
+// const App: FC = (): ReactElement => {
+// export const ItemToDo<IProps> = (props: IProps) => {
+export const ItemToDo: FC<IProps> = (props: IProps): ReactElement => {
+  // const Layout: React.FC<OwnProps> = (props: OwnProps) => {}
+
+  const item = props.item;
 
   const [context, setContext] = useContext(ToDoContext);
   const { todosArray } = context;
@@ -12,8 +21,8 @@ export const ItemToDo = (props) => {
   const [isEdit, setIsEdit] = useState(false);
 
   const checkboxHandler = () => {
-    const newArray = todosArray.map((todo) => {
-      if (todo.id === item.id) {
+    const newArray = todosArray.map((todo: any) => {
+      if (todo.id === item.id) {//тут ошибка
         return {
           ...todo,
           isChecked: !todo.isChecked,
@@ -25,7 +34,7 @@ export const ItemToDo = (props) => {
     setContext({
       ...context,
       todosArray: newArray,
-      isAllCompleted: !newArray.find((item) => !item.isChecked),
+      isAllCompleted: !newArray.find((item: any) => !item.isChecked),
     });
     isChecked === false ? setIsChecked(true) : setIsChecked(false);
   };
@@ -34,9 +43,10 @@ export const ItemToDo = (props) => {
     isEdit === false ? setIsEdit(true) : setIsEdit(false);
   };
 
-  const handleOnBlur = (value) => {//fix it
+  const handleOnBlur = (value: string) => {
+    //fix it
     if (value !== "") {
-      const newArr = todosArray.map((todo) => {
+      const newArr = todosArray.map((todo: any) => {
         if (todo.id === item.id) {
           return {
             ...todo,
@@ -49,18 +59,18 @@ export const ItemToDo = (props) => {
 
       setContext({
         ...context,
-        todosArray: newArr
+        todosArray: newArr,
       });
     }
     setIsEdit(false);
   };
 
   const removeItem = () => {
-    const newArray = todosArray.filter((todo) => todo.id !== item.id);
+    const newArray = todosArray.filter((todo: any) => todo.id !== item.id);
     setContext({
       ...context,
       todosArray: newArray,
-      isAllCompleted: !newArray.find((todo) => !todo.isChecked),
+      isAllCompleted: !newArray.find((todo: any) => !todo.isChecked),
     });
   };
 
