@@ -1,13 +1,9 @@
 import React, { FC, ReactElement, useState, useContext } from "react";
 import { ChangeInput } from "./ChangeInput";
 import { ToDoContext } from "./CreateContextApp";
-import { ToDo } from "./types/Types";
+import { ToDo, PropsItem } from "./types/Types";
 
-type Props = {
-  item: ToDo;
-};
-
-export const ItemToDo: FC<Props> = (props: Props): ReactElement => {
+export const ItemToDo: FC<PropsItem> = (props: PropsItem): ReactElement => {
   const item = props.item;
   const itemId = String(item.id);
 

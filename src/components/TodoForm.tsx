@@ -1,13 +1,12 @@
 import React, { FC, useState, ReactElement, useEffect, useContext } from "react";
 
 import { ToDoContext } from "./CreateContextApp";
+import { ToDo } from "./types/Types";
 
 export const TodoForm: FC = (): ReactElement => {
-
   const context = useContext(ToDoContext);
 
   const { state, setState } = context;
-
 
   const { isAllCompleted, todosArray } = state;
 
@@ -20,7 +19,6 @@ export const TodoForm: FC = (): ReactElement => {
   });
 
   const addToDo = () => {
-    // ... = (type?) => {}
     if (charCode === 13 && itemToDoValue.trim() !== "") {
       setState({
         ...state,
@@ -40,23 +38,23 @@ export const TodoForm: FC = (): ReactElement => {
 
   const handleCheckAll = () => {
     if (!isAllCompleted) {
-      const newArray = todosArray.map((item: any) => {
+      const newArray = todosArray.map((item: ToDo) => {
         return { ...item, isChecked: true };
       });
       setState({
         ...state,
         todosArray: newArray,
-        isAllCompleted: !newArray.find((item: any) => !item.isChecked),
+        isAllCompleted: !newArray.find((item: ToDo) => !item.isChecked),
       });
       setIsSelected(true);
     } else {
-      const newArray = todosArray.map((item: any) => {
+      const newArray = todosArray.map((item: ToDo) => {
         return { ...item, isChecked: false };
       });
       setState({
         ...state,
         todosArray: newArray,
-        isAllCompleted: !newArray.find((item: any) => !item.isChecked),
+        isAllCompleted: !newArray.find((item: ToDo) => !item.isChecked),
       });
       setIsSelected(false);
     }
