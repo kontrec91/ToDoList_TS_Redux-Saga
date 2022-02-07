@@ -1,78 +1,74 @@
-import React, { FC, ReactElement, useState, useContext } from "react";
+import React, { FC, ReactElement, useState, useCallback } from "react";
 import { ChangeInput } from "./ChangeInput";
-import { ToDoContext } from "./CreateContextApp";
-import { ToDo, PropsItem } from "./types/Types";
+import { PropsItem } from "./types/Types";
+import { useDispatch, useSelector } from "react-redux";
+import { InitState, ToDo } from "./types/Types";
+import { deleteItemToDo, changeItemTodoValue, checkItemToDo } from "../actions/AuthActions";
 
-export const ItemToDo: FC<PropsItem> = (props: PropsItem): ReactElement => {
-  const item = props.item;
-  const itemId = String(item.id);
+export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
+  const selectUserId: string = useSelector((state: InitState) => state.userId);
+  const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
+  const selectFilterType: string = useSelector((state: InitState) => state.filterType);
 
-  const { state, setState } = useContext(ToDoContext);
-  const { todosArray } = state;
+  const dispatch = useDispatch();
 
-  const [isChecked, setIsChecked] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const checkboxHandler = () => {
-    const newArray = todosArray.map((todo: ToDo) => {
-      if (todo.id === item.id) {
-        return {
-          ...todo,
-          isChecked: !todo.isChecked,
-        };
-      } else {
-        return todo;
+  const checkboxHandler = useCallback(() => {
+    console.log("check");
+    //   const newArray = todosArray.map((todo) =>
+    //     todo.id === item.id ? { ...todo, isChecked: !todo.isChecked } : { ...todo }
+    //   );
+    //   setState({
+    //     ...state,
+    //     todosArray: newArray,
+    //     isAllCompleted: !newArray.find((item) => !item.isChecked),
+    //   });
+    setIsChecked(!isChecked);
+    dispatch(checkItemToDo(item._id, selectUserId, selectUserTodosArray));
+  }, [isChecked, item._id, selectUserTodosArray]);
+
+  const handleDoubleClick = useCallback(() => {
+    setIsEdit(!isEdit);
+  }, [isEdit]);
+
+  const handleOnBlur = useCallback(
+    (value: string) => {
+      if (value) {
+        dispatch(changeItemTodoValue(value, item._id, selectUserId, selectUserTodosArray));
       }
-    });
+      setIsEdit(false);
+    },
+    [item._id, selectUserTodosArray]
+  );
 
-    setState({
-      ...state,
-      todosArray: newArray,
-      isAllCompleted: !newArray.find((item: ToDo) => !item.isChecked),
-    });
+  const removeItem = useCallback(() => {
+    dispatch(deleteItemToDo(item._id, selectUserId, selectUserTodosArray));
+    //isAllCompleted: !newArray.find((todo) => !todo.isChecked),
+  }, [item, selectUserTodosArray]);
 
-    isChecked === false ? setIsChecked(true) : setIsChecked(false);
-  };
-
-  const handleDoubleClick = () => {
-    isEdit === false ? setIsEdit(true) : setIsEdit(false);
-  };
-
-  const handleOnBlur = (value: string) => {
-    if (value !== "") {
-      const newArr = todosArray.map((todo: ToDo) => {
-        if (todo.id === item.id) {
-          return {
-            ...todo,
-            value: value,
-          };
-        } else {
-          return todo;
-        }
-      });
-
-      setState({
-        ...state,
-        todosArray: newArr,
-      });
-    }
-    setIsEdit(false);
-  };
-
-  const removeItem = () => {
-    const newArray = todosArray.filter((todo: ToDo) => todo.id !== item.id);
-
-    setState({
-      ...state,
-      todosArray: newArray,
-      isAllCompleted: !newArray.find((todo: ToDo) => !todo.isChecked),
-    });
-  };
+  // const removeItem = () => {
+  //   console.log("delete: ", item);
+  //   // const newArray = selectUserTodosArray.filter((todo) => {
+  //   //   if(todo._id !== item._id){
+  //   //     return todo
+  //   //   }
+  //   //   console.log('Deleted todo', todo,item )
+  //   // });
+  //   // console.log("filtered ARRAY:", newArray);
+  //   //   setState({
+  //   //     ...state,
+  //   //     todosArray: newArray,
+  //   //     isAllCompleted: !newArray.find((todo) => !todo.isChecked),
+  //   //   });
+  //   // dispatch(deleteItemToDo(newArray));
+  // };
 
   return (
     <li className="item-text">
-      {isEdit === true ? (
-        <ChangeInput handleOnBlur={handleOnBlur} value={item.value} />
+      {isEdit ? (
+        <ChangeInput handleOnBlur={handleOnBlur} value={item.todoValue} />
       ) : (
         <>
           <input
@@ -82,15 +78,15 @@ export const ItemToDo: FC<PropsItem> = (props: PropsItem): ReactElement => {
             className="item-checkbox"
           />
           <label
-            className={item.isChecked ? "check list-item-li-done" : "check"}
-            htmlFor={itemId}
+            className={`${item.isChecked ? "list-item-li-done" : ""} check`}
+            htmlFor={`${item._id}`}
             onClick={() => checkboxHandler()}
           ></label>
           <span
-            className={item.isChecked ? "text-li list-item-label-done list-item-li-done" : "text-li"}
+            className={`${item.isChecked ? "list-item-label-done list-item-li-done" : ""} text-li`}
             onDoubleClick={() => handleDoubleClick()}
           >
-            {item.value}
+            {item.todoValue}
           </span>
           <span className="delete" onClick={() => removeItem()}>
             ×

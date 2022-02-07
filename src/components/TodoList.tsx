@@ -1,31 +1,33 @@
-import React, { FC, ReactElement, useContext } from "react";
+import React, { FC, ReactElement, useContext, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { InitState, ToDo } from "./types/Types";
 
 import { ItemToDo } from "./ItemToDo";
-import { ToDoContext } from "./CreateContextApp";
-import { ToDo } from "./types/Types";
 
 export const TodoList: FC = (): ReactElement => {
-  const { state } = useContext(ToDoContext);
-  const { filterType, todosArray } = state;
+  const selectUserId: string = useSelector((state: InitState) => state.userId);
+  const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
+  const selectFilterType: string = useSelector((state: InitState) => state.filterType);
+  console.log("USERtODOS", selectUserTodosArray);
 
-  const filteredArray = () => {
-    switch (filterType) {
+  const filteredArray = useMemo(() => {
+    switch (selectFilterType) {
       case "Active":
-        return todosArray.filter((item: ToDo) => item.isChecked === false);
+        return selectUserTodosArray.filter((item) => item.isChecked === false);
       case "Completed":
-        return todosArray.filter((item: ToDo) => item.isChecked === true);
+        return selectUserTodosArray.filter((item) => item.isChecked === true);
       default:
-        return todosArray;
+        return selectUserTodosArray;
     }
-  };
+  }, [selectFilterType, selectUserTodosArray]);
 
   return (
     <div className="main">
       <ul className="todoList">
-        {filteredArray().map((item: ToDo) => {
+        {filteredArray.map((item: ToDo) => {
           return (
-            <ItemToDo key={item.id} item={item}>
-              {item.value}
+            <ItemToDo key={item._id} item={item}>
+              {item.todoValue}
             </ItemToDo>
           );
         })}

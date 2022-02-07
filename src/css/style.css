@@ -11,6 +11,11 @@ ul {
     margin: 0;
 }
 
+.logOut-block {
+    display: flex;
+    justify-content: flex-end;
+}
+
 li {
     display: flex;
     align-items: center;
@@ -29,6 +34,29 @@ li {
     min-height: 100%;
     flex-direction: column;
     max-width: 400px;
+}
+
+.mainPage {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #e6e6e6;
+    padding: 5px;
+}
+
+.mainPage input {
+    text-align: center;
+    width: 92%;
+    border-bottom-style: solid;
+    border-bottom-color: #e6e6e6;
+    border-bottom-width: 1px;
+}
+
+.submit-button {
+    padding: 10px;
+    margin: 5px;
 }
 
 .header {}
@@ -118,6 +146,21 @@ li {
 input::placeholder {
     font-size: 1.2em;
     font-style: italic;
+}
+
+.password-block {
+    display: flex;
+    align-items: center;
+}
+
+
+.password {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.password-clicked {
+    opacity: 1;
 }
 
 .delete {

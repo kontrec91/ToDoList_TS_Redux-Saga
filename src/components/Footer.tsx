@@ -1,65 +1,61 @@
-import React, { FC, ReactElement, useContext } from "react";
-
-import { ToDoContext } from "./CreateContextApp";
-import { ToDo } from "./types/Types";
+import React, { FC, ReactElement, useMemo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { InitState, ToDo } from "./types/Types";
+import { setFilterType, clearCompletedToDo} from "../actions/AuthActions";
 
 export const Footer: FC = (): ReactElement => {
+  const selectUserId: string = useSelector((state: InitState) => state.userId);
+  const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
+  const selectFilterType: string = useSelector((state: InitState) => state.filterType);
 
-  const {state, setState} = useContext(ToDoContext);
-  const { filterType, todosArray } = state;
+  const dispatch = useDispatch();
 
-  const showCountItems = () => {
-    const arr = todosArray.filter((item: ToDo) => item.isChecked !== true);
+  const showCountItems = useMemo(() => {
+    const arr = selectUserTodosArray.filter((item) => item.isChecked !== true);
     return arr.length;
-  };
+  }, [selectUserTodosArray]);
 
-  const showClearCompletedButton = () => {
-    const isCompleted = todosArray.some((item: ToDo) => item.isChecked === true);
+  const showClearCompletedButton = useMemo(() => {
+    const isCompleted = selectUserTodosArray.some((item) => item.isChecked === true);
     return isCompleted;
-  };
+  }, [selectUserTodosArray]);
 
-  const handleSetFilterType = (value: string) => {
+  const handleSetFilterType = useCallback(
+    (value: string) => {
+      dispatch(setFilterType(value));
+    },
+    [selectUserTodosArray, selectFilterType]
+  );
 
-    setState({
-      ...state,
-      filterType: value,
-    });
-  };
-
-  const handlerClearCompleted = () => {
-    const fileredArr = todosArray.filter((todo: ToDo) => todo.isChecked === false);
-
-        setState({
-      ...state,
-      todosArray: fileredArr,
-      filterType: "All",
-    });
-  };
+  const handlerClearCompleted = useCallback(() => {
+    const fileredArr = selectUserTodosArray.filter((todo) => todo.isChecked === false);
+    dispatch(clearCompletedToDo(fileredArr, selectUserId, "All"));
+  }, [ selectUserTodosArray]);
 
   return (
-    <div className={todosArray.length ? "footer" : "footer hidden"}>
-      <span className="number-items-left">{showCountItems()} items left</span>
+    <div className={`${!selectUserTodosArray.length ? "hidden" : ""} footer`}>
+      <span className="number-items-left">{showCountItems} items left</span>
       <button
         onClick={() => handleSetFilterType("All")}
-        className={filterType === "All" ? "all-button active" : "all-button"}
+        className={`${selectFilterType === "All" ? "active" : ""} all-button`}
       >
         All
       </button>
       <button
         onClick={() => handleSetFilterType("Active")}
-        className={filterType === "Active" ? "active-button active" : "active-button"}
+        className={`${selectFilterType === "Active" ? "active" : ""} active-button`}
       >
         Active
       </button>
       <button
         onClick={() => handleSetFilterType("Completed")}
-        className={filterType === "Completed" ? "completed-button active" : "completed-button"}
+        className={`${selectFilterType === "Completed" ? "active" : ""} completed-button`}
       >
         Completed
       </button>
       <button
-        onClick={() => handlerClearCompleted()}
-        className={showClearCompletedButton() ? "clear-completed-button" : "clear-completed-button hidden"}
+      onClick={() => handlerClearCompleted()}
+      className={`${!showClearCompletedButton ? "hidden" : ""} clear-completed-button`}
       >
         Clear completed
       </button>

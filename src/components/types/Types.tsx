@@ -1,25 +1,86 @@
 export type ToDo = {
   isChecked: boolean;
-  value: string;
-  id: number;
+  todoValue: string;
+  _id: string;
+  userId: string;
+};
+
+export type createToDo = {
+  isChecked: boolean;
+  todoValue: string;
+  userId: string;
+};
+
+export type ActionDeleteToDo = {
+  type: string;
+  payload: { itemTodoId: string; userId: string; todosArray: ToDo[] };
+};
+
+export type ActionChangeItemToDo = {
+  type: string;
+  payload: { itemTodoValue: string; itemTodoId: string; userId: string; todosArray: ToDo[] };
+};
+
+export type ActionCheckItemToDo = {
+  type: string;
+  payload: { itemTodoId: string; userId: string, todosArray: ToDo[]};
+};
+
+export type ActionClearCompletedToDo = {
+  type: string;
+  payload: { filteredArr: ToDo[], userId: string, filterType: string };
 };
 
 export type InitState = {
   todosArray: ToDo[];
   filterType: string;
   isAllCompleted: boolean;
+  email: string;
+  password: string;
+  name: string;
+  userId: string;
+};
+
+export type Credentials = {
+  email: string;
+  password: string;
+  name: string;
+};
+
+export type ResponseGenerator = {
+  config?: any;
+  data?: any;
+  headers?: any;
+  request?: any;
+  status?: number;
+  statusText?: string;
+};
+
+export type Action = {
+  type: string;
+  payload: Credentials;
+};
+
+export type ActionGetTodos = {
+  type: string;
+  payload: string;
+};
+
+export type ActionSetFilter = {
+  type: string;
+  payload: string;
+};
+
+export type ActionAddTodo = {
+  type: string;
+  payload: { itemTodo: ToDo; isAllCompleted: boolean; userId: string };
 };
 
 export type Props = {
-  handleOnBlur: (arg0: string) => void;
+  handleOnBlur: (arg: string) => void;
   value: string;
 };
 
 export type PropsItem = {
   item: ToDo;
-};
-
-export type ContextProps = {
-  state: InitState;
-  setState: (arg0: InitState) => void;
 };
