@@ -1,7 +1,7 @@
-import React, { FC, useState, ReactElement, useEffect, useCallback } from "react";
+import React, { FC, useState, ReactElement, useEffect, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InitState, ToDo } from "./types/Types";
-import { getUsersTodos, allTodosComplited } from "../actions/AuthActions";
+import { getUserTodos, allTodosComplited } from "../actions/AuthActions";
 import store from "../StoreSaga";
 import { addToDoItem } from "../actions/AuthActions";
 
@@ -17,7 +17,6 @@ export const TodoForm: FC = (): ReactElement => {
   const [keyCode, setKeyCode] = useState<string>("");
   const [itemToDoValue, setItemToDoValue] = useState<string>("");
   const [isSelected, setIsSelected] = useState<boolean>(false);
-  const [isAllCompleted, setIsAllCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     addToDo();
@@ -25,7 +24,7 @@ export const TodoForm: FC = (): ReactElement => {
 
   useEffect(() => {
     if (selectUserId) {
-      dispatch(getUsersTodos(selectUserId));
+      dispatch(getUserTodos(selectUserId));
     }
   }, [selectUserId]);
 
@@ -47,35 +46,22 @@ export const TodoForm: FC = (): ReactElement => {
   }, [itemToDoValue, keyCode]);
 
   const handleCheckAll = useCallback(() => {
-    console.log("selectIsAllCompleted: ", selectIsAllCompleted);
-    const newArray = selectUserTodosArray.map((item) => {
-      return { ...item, isChecked: !item.isChecked };
-    });
-    const isCompleteTodos = !newArray.find((item: ToDo) => !item.isChecked);
-    setIsAllCompleted(isCompleteTodos);
-    setIsSelected(!isSelected);
     if (!selectIsAllCompleted) {
-      //false
-      // const newArray = selectUserTodosArray.map((item) => {
-      //   return { ...item, isChecked: true };
-      // });
-      // const isCompleteTodos = !newArray.find((item: ToDo) => !item.isChecked);
-      // setIsAllCompleted(isCompleteTodos);
-      console.log("newArray", newArray, "setIsAllCompleted", isAllCompleted);
-      // setIsSelected(true);
-      dispatch(allTodosComplited(selectUserId, isAllCompleted)); //здесь берем только юзей ид и isAllCompleted
+      const newArray = selectUserTodosArray.map((item) => {
+        return { ...item, isChecked: true };
+      });
+      const isCompleteTodos = !newArray.find((item: ToDo) => !item.isChecked);
+      setIsSelected(true);
+      dispatch(allTodosComplited(selectUserId, isCompleteTodos, newArray));
     } else {
-      //true
-      // const newArray = selectUserTodosArray.map((item) => {
-      //   return { ...item, isChecked: false };
-      // });
-      // const isCompleteTodos = !newArray.find((item: ToDo) => !item.isChecked);
-      // setIsAllCompleted(isCompleteTodos);
-      console.log("newArray", newArray, "setIsAllCompleted", isAllCompleted);
-      // setIsSelected(false);
-      dispatch(allTodosComplited(selectUserId, isAllCompleted));
+      const newArray = selectUserTodosArray.map((item) => {
+        return { ...item, isChecked: false };
+      });
+      const isCompleteTodos = !newArray.find((item: ToDo) => !item.isChecked);
+      setIsSelected(false);
+      dispatch(allTodosComplited(selectUserId, isCompleteTodos, newArray));
     }
-  }, [selectIsAllCompleted, selectUserTodosArray, isAllCompleted]);
+  }, [selectIsAllCompleted, selectUserTodosArray]);
 
   return (
     <div className="header">
@@ -83,7 +69,7 @@ export const TodoForm: FC = (): ReactElement => {
       <div className="header-task">
         <span
           className={`${!selectUserTodosArray.length ? "hidden" : isSelected ? "checked" : ""} allComplete`}
-          onClick={() => handleCheckAll()}
+          onClick={handleCheckAll}
         ></span>
         <input
           value={itemToDoValue}

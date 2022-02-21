@@ -1,6 +1,9 @@
 import axios from "axios";
 import * as actions from "./constants/constants";
 import { call, put, takeEvery, all } from "redux-saga/effects";
+import jwt_decode from "jwt-decode";
+import CryptoJS from "crypto-js";
+import hash from "object-hash";
 
 // 1. убрать везде запросы на получение данных из бека
 // 2. прокидывать масив тудушек в payload в экшене
@@ -9,7 +12,7 @@ import { call, put, takeEvery, all } from "redux-saga/effects";
 import {
   ResponseGenerator,
   Credentials,
-  Action,
+  UserAction,
   ActionGetTodos,
   ActionAddTodo,
   ActionDeleteToDo,
@@ -23,39 +26,55 @@ import {
 
 async function clearCompletedToDo(params: { filteredArr: ToDo[]; userId: string }) {
   const resp = await axios
-    .post(`http://127.0.0.1:3001/clear-completed?user_id=${params.userId}`, {
-      userId: params.userId,
-    })
-    .then(
-      (response) => {
-        // return getUserTodos(params.userId);
-        return response
-      },
-      (error) => {
-        console.log(error);
-        return error;
+    .post(
+      `http://127.0.0.1:3001/clear-completed`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+        },
       }
-    );
+    )
+    .then((response) => {
+      console.log("55555555555RRESPONSE!!!!!!!!!!!!!clearCompletedToDo", response);
+      // yield put({
+      //   type: "CLEAR_COMPLETEDTODO_SUCESESS",
+      //   payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
+      // });
+      return response;
+    })
+    .catch((error) => {
+      console.log("ERRRRORRRRRRRRRRRRRRR", error.response);
+      if (error.response.status === 401) {
+        console.log("params.userId!!!!!!!!!!!!!!!!!!!!!!!!", params.userId);
+        // refreshTokens(params.userId, clearCompletedToDo, params);
+      }
+    });
   console.log("resp:", resp);
   return resp;
 }
 
 async function checkItemToDo(params: { itemTodoId: string; userId: string }) {
   const resp = await axios
-    .post(`http://127.0.0.1:3001/check-data?user_id=${params.userId}`, {
-      itemTodoId: params.itemTodoId,
-      userId: params.userId,
-    })
-    .then(
-      (response) => {
-        // return getUserTodos(params.userId);
-        return response;
+    .post(
+      `http://127.0.0.1:3001/check-data`,
+      {
+        itemTodoId: params.itemTodoId,
       },
-      (error) => {
-        console.log(error);
-        return error;
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+        },
       }
-    );
+    )
+    .then((response) => {
+      console.log("STATUS!!!!!!!!!!!!!", response.status);
+      return response;
+    })
+    .catch((e) => {
+      console.log("ERRRRORRRRRRRRRRRRRRR", e);
+      // refreshTokens(params.userId, checkItemToDo, params);
+    });
   console.log("resp:", resp);
   return resp;
 }
@@ -63,64 +82,70 @@ async function checkItemToDo(params: { itemTodoId: string; userId: string }) {
 async function changeItemToDo(params: { itemTodoValue: string; itemTodoId: string; userId: string }) {
   console.log("params", params);
   const resp = await axios
-    .post(`http://127.0.0.1:3001/change-data?user_id=${params.userId}`, {
-      itemTodoId: params.itemTodoId,
-      userId: params.userId,
-      itemTodoValue: params.itemTodoValue,
-    })
-    .then(
-      (response) => {
-        // return getUserTodos(params.userId);
-        return response;
+    .post(
+      `http://127.0.0.1:3001/change-data`,
+      {
+        itemTodoId: params.itemTodoId,
+        itemTodoValue: params.itemTodoValue,
       },
-      (error) => {
-        console.log(error);
-        return error;
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+        },
       }
-    );
+    )
+    .then((response) => {
+      return response;
+    })
+    .catch((e) => console.log("ERRRRORRRRRRRRRRRRRRR", e));
   console.log("resp:", resp);
   return resp;
 }
 
 async function deleteItemToDo(params: { itemTodoId: string; userId: string }) {
   console.log("params in delete: ", params);
-
   const resp = await axios
-    .post(`http://127.0.0.1:3001/delete-data?user_id=${params.userId}`, {
-      itemTodoId: params.itemTodoId,
-      userId: params.userId,
-    })
-    .then(
-      (response) => {
-        // return getUserTodos(params.userId);//getUserTodos
-        return response;
+    .post(
+      `http://127.0.0.1:3001/delete-data`,
+      {
+        itemTodoId: params.itemTodoId,
       },
-      (error) => {
-        console.log(error);
-        return error;
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+        },
       }
-    );
+    )
+    .then((response) => {
+      return response;
+    })
+    .catch((e) => console.log("ERRRRORRRRRRRRRRRRRRR", e));
   console.log("resp:", resp);
   return resp;
 }
 
 async function addItemToDo(params: { itemTodo: createToDo; isAllCompleted: boolean; userId: string }) {
   const resp = await axios
-    .post("http://127.0.0.1:3001/add-data", {
-      itemTodo: params.itemTodo,
-      // isAllCompleted: params.isAllCompleted,
-      userId: params.userId,
-    })
-    .then(
-      (response) => {
-        // return getUserTodos(params.userId);
-        return response.data;
+    .post(
+      "http://127.0.0.1:3001/add-data",
+      {
+        itemTodo: params.itemTodo,
       },
-      (error) => {
-        console.log(error);
-        return error;
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+        },
       }
-    );
+    )
+    .then((response) => {
+      console.log("RESPONSE", response);
+      if (response.status >= 200 && response.status < 400) {
+        return response.data;
+      } else {
+        logOutUser();
+      }
+    })
+    .catch((e) => console.log("ERRRRORRRRRRRRRRRRRRR", e));
   console.log("resp:", resp);
   return resp;
 }
@@ -128,20 +153,21 @@ async function addItemToDo(params: { itemTodo: createToDo; isAllCompleted: boole
 async function switchAllUserToDo(params: { userId: string; isAllCompleted: boolean }) {
   console.log("params in SWITCH_ALL", params);
   const resp = await axios
-    .post(`http://127.0.0.1:3001/switch-all?user_id=${params.userId}`, {
-      userId: params.userId,
-      isChecked: params.isAllCompleted,
-    })
-    .then(
-      (response) => {
-        return getUserTodos(params.userId);
-        // return response.data;
+    .post(
+      `http://127.0.0.1:3001/switch-all`,
+      {
+        isChecked: params.isAllCompleted,
       },
-      (error) => {
-        console.log(error);
-        return error;
+      {
+        headers: {
+          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`, //??????
+        },
       }
-    );
+    )
+    .then((response) => {
+      return response;
+    })
+    .catch((e) => console.log("ERRRRORRRRRRRRRRRRRRR", e));
   console.log("resp:", resp);
   return resp;
 }
@@ -150,30 +176,49 @@ async function switchAllUserToDo(params: { userId: string; isAllCompleted: boole
 
 async function getUserTodos(userId: string) {
   const response = await axios
-    .get(`http://127.0.0.1:3001/get-data?user_id=${userId}`)
+    .get(`http://127.0.0.1:3001/get-data`, {
+      headers: {
+        Authorization: "Bearer " + `${localStorage.getItem("authToken")}`, //??????
+      },
+    })
     .then((response) => {
+      console.log("RESPONSE", response);
       return response;
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((e) => console.log("ERRRRORRRRRRRRRRRRRRR", e));
+  console.log("response", response);
   return response;
 }
 
 // type setUserLoginType = (userState: Credentials) => Promise<string>;
 
 // const userLogin: setUserLoginType = async (userState) => {
+
 async function userLogin(userState: Credentials) {
   if (userState.email && userState.name && userState.password) {
-    console.log("state:", userState);
+    const hashPass = hash({ password: userState.password, key: `${process.env.REACT_APP_SECRET_KEY}`! });
+    console.log("hash", process.env.REACT_APP_SECRET_KEY);
+
+    const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
+    console.log("encryptedPass12312313131", encryptedPass);
+
+    // const encryptedPass = Encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!)
+    // console.log('encryptedPass12312313131', encryptedPass);
+
+    console.log("12312313131", encryptedPass);
+    const bytes = CryptoJS.AES.decrypt(encryptedPass, `${process.env.REACT_APP_SECRET_KEY}`);
+    const decryptPassword = bytes.toString(CryptoJS.enc.Utf8);
+    console.log("decryptPassword11111111111111111", decryptPassword, "typeof", typeof decryptPassword);
+
     const resp = await axios
       .post("http://127.0.0.1:3001/login", {
         email: userState.email,
-        password: userState.password,
+        password: encryptedPass,
         name: userState.name,
       })
       .then(
         (response) => {
+          localStorage.setItem("authToken", response.data.token);
           return response.data.userID;
         },
         (error) => {
@@ -189,15 +234,20 @@ async function userLogin(userState: Credentials) {
 async function createUser(userState: Credentials) {
   console.log("state:", userState);
   if (userState.email && userState.name && userState.password) {
+    const hashPass = hash({ password: userState.password, key: `${process.env.REACT_APP_SECRET_KEY}`! });
+    const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
+
     const resp = await axios
       .post("http://127.0.0.1:3001/reg", {
         email: userState.email,
-        password: userState.password,
+        password: encryptedPass,
         name: userState.name,
       })
       .then(
         (response) => {
-          return response.data._id;
+          localStorage.setItem("authToken", response.data.token);
+          const decodedTocken: { _id: string } = jwt_decode(response.data.token);
+          return decodedTocken._id;
         },
         (error) => {
           console.log(error);
@@ -209,9 +259,11 @@ async function createUser(userState: Credentials) {
   }
 }
 
-function* workerSagaRegistration(payload: Action) {
-  //Action => UserAction
-  console.log("register", payload);
+function logOutUser() {
+  localStorage.removeItem("authToken");
+}
+
+function* workerSagaRegistration(payload: UserAction) {
   try {
     const res: string = yield call(createUser, payload.payload);
     if (res) {
@@ -224,7 +276,7 @@ function* workerSagaRegistration(payload: Action) {
   }
 }
 
-function* workerSagaLogin(payload: Action) {
+function* workerSagaLogin(payload: UserAction) {
   try {
     const res: string = yield call(userLogin, payload.payload);
     if (res) {
@@ -239,10 +291,11 @@ function* workerSagaLogin(payload: Action) {
 }
 
 function* workerSagaLogOut() {
+  logOutUser();
   yield put({ type: "LOG_OUT_SUCCESS" });
 }
 
-function* workerSagaGetUsersTodos(payload: ActionGetTodos) {
+function* workerSagaGetUserTodos(payload: ActionGetTodos) {
   try {
     const response: ResponseGenerator = yield call(getUserTodos, payload.payload);
     if (response) {
@@ -256,14 +309,25 @@ function* workerSagaGetUsersTodos(payload: ActionGetTodos) {
   }
 }
 
-function* workerSagaAllTodosComptited(payload: { payload: { userId: string; isAllCompleted: boolean }; type: string }) {
+function* workerSagaAllTodosComptited(payload: {
+  payload: { userId: string; isAllCompleted: boolean; todosArray: ToDo[] };
+  type: string;
+}) {
   console.log("payload", payload);
   const response: ResponseGenerator = yield call(switchAllUserToDo, payload.payload);
-  console.log("response", response);
-  yield put({
-    type: "ALL_TODOS_COMPLITED_SUCCESS",
-    payload: { data: response.data, isAllCompleted: payload.payload.isAllCompleted },
-  });
+  try {
+    if (response) {
+      yield put({
+        type: "ALL_TODOS_COMPLITED_SUCCESS",
+        payload: { isAllCompleted: payload.payload.isAllCompleted, todosArray: payload.payload.todosArray },
+      });
+    } else {
+      yield put({ type: "ALL_TODOS_COMPLITED_FAILED" });
+      throw new Error("Could not get response");
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
 }
 
 function* workerSagaAddToDoItem(payload: ActionAddTodo) {
@@ -288,7 +352,10 @@ function* workerSagaDeleteItem(payload: ActionDeleteToDo) {
   try {
     if (response) {
       const todosArray: ToDo[] = payload.payload.todosArray.filter((item) => item._id !== payload.payload.itemTodoId);
-      yield put({ type: "DELETE_ITEMTODO_SUCCESS", payload: todosArray });
+      yield put({
+        type: "DELETE_ITEMTODO_SUCCESS",
+        payload: { todosArray: todosArray, isAllCompleted: payload.payload.isAllCompleted },
+      });
     } else {
       yield put({ type: "ADD_ITEMTODO_FAILED" });
       throw new Error("Could not get response");
@@ -328,36 +395,51 @@ function* workerSagaCheckItemToDo(payload: ActionCheckItemToDo) {
         }
         return item;
       });
-      yield put({ type: "CHECK_ITEMTODO_SUCESESS", payload: todosArray });
+      yield put({
+        type: "CHECK_ITEMTODO_SUCESESS",
+        payload: { todosArray: todosArray, isAllcompleted: payload.payload.isAllCompleted },
+      });
     } else {
+      console.log("RESPONSE!!!!!!!!!!", response);
       yield put({ type: "CHECK_ITEMTODO_VALUE_FAILED" });
       throw new Error("Could not get response");
     }
   } catch (error) {
     console.log("error", error);
+    //запрос на рефреш токен
   }
 }
 
 function* workerSagaClearCompletedToDo(payload: ActionClearCompletedToDo) {
-  console.log('payload', payload)
+  console.log("payload", payload);
   const response: ResponseGenerator = yield call(clearCompletedToDo, payload.payload);
+  console.log("RESPONSE!!!!!!!workerSagaClearCompletedToDo", response);
   try {
-    if (response) {
-      // const fileredArr = selectUserTodosArray.filter((todo) => todo.isChecked === false);
-
-      // const todosArray: ToDo[] = payload.payload.todosArray.map((item) => {
-      //   if (item._id === payload.payload.itemTodoId) {
-      //     item.isChecked = !item.isChecked;
-      //   }
-      //   return item;
-      // });
-      yield put({ type: "CLEAR_COMPLETEDTODO_SUCESESS", payload: {filteredArr: payload.payload.filteredArr, filterType:  payload.payload.filterType}});
-    } else {
-      yield put({ type: "CLEAR_COMPLETEDTODO_FAILED" });
-      throw new Error("Could not get response");
+    if (response.status === 200) {
+      yield put({
+        type: "CLEAR_COMPLETEDTODO_SUCESESS",
+        payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
+      });
     }
-  } catch (error) {
-    console.log("error", error);
+    if (response.status === 401) {
+      console.log("12312313payload.payload!!!!!!!!!!!!!!!!!!!!!!!!", payload.payload);
+      const resp = refreshTokens(payload.payload.userId, clearCompletedToDo, payload.payload);
+      // ЗАПУСКАТЬ ТУТ refreshTokens А НЕ ВНУТРИ clearCompletedToDo
+      // if (resp:any) {
+      //   yield put({
+      //     type: "CLEAR_COMPLETEDTODO_SUCESESS",
+      //     payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
+      //   });
+      // }
+    }
+  } catch (error: any) {
+    console.log("ERRRRORRRRRRRRRRRRRRR", error.response);
+    yield put({ type: "CLEAR_COMPLETEDTODO_FAILED" });
+
+    // if (error.response.status === 401) {
+    //   console.log("params.userId!!!!!!!!!!!!!!!!!!!!!!!!",  payload.payload.userId);
+    //    refreshTokens( payload.payload.userId, clearCompletedToDo,  payload.payload);
+    // }
   }
 }
 
@@ -370,12 +452,58 @@ function* workerSagaSetFilterType(payload: ActionSetFilter) {
       throw new Error("Could not get response");
     }
   } catch (error) {
+    // (401?)
+    // refreshTokens
+    console.log("error", error);
+  }
+}
+
+async function refreshTokens(userId: string, callback: any, params: any) {
+  //after run code reducer must know what to do
+  console.log("REFRESHTOKEN", userId, "REFRESHTOKEN", callback, "REFRESHTOKEN", params);
+  // async function refreshTokens(params: {userId: string, callback: any, params: any}) {
+  const resp = await axios
+    .post("http://127.0.0.1:3001/refresh", {
+      userId: userId,
+    })
+    .then(
+      async (response) => {
+        console.log("RRESPONSE!!!!!!!!!!!!!", response.data);
+        localStorage.setItem("authToken", response.data.accesToken);
+        if (callback) {
+          console.log("!!!!!!!!!!!!!!!!!!!11111111111111111111111111111", params);
+          await callback(params);
+        }
+        // return response.data.userID;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  return resp;
+}
+
+function* workerSagaRefreshTokens(userId: string) {
+  //////////&&&&&&&&&&&&&&&&????????????????? need login here
+  const response: ResponseGenerator = yield call(refreshTokens, userId, null, null);
+  try {
+    if (response) {
+      console.log("RESPONSE!!!!!!!!!!!!!Q1123123", response);
+      yield put({
+        type: "CREATE_TOKENS_SUCESESS",
+        payload: {},
+      });
+    } else {
+      yield put({ type: "CREATE_TOKENS_FAILED" });
+      throw new Error("Could not get response");
+    }
+  } catch (error) {
     console.log("error", error);
   }
 }
 
 export function* watchSagaTodos() {
-  yield takeEvery("GET_USER_DATA_REQUEST", workerSagaGetUsersTodos);
+  yield takeEvery("GET_USER_DATA_REQUEST", workerSagaGetUserTodos);
   yield takeEvery("ALL_TODOS_COMPLITED_REQUEST", workerSagaAllTodosComptited);
   yield takeEvery("CLEAR_COMPLETEDTODO_REQUEST", workerSagaClearCompletedToDo);
   yield takeEvery("SET_FILTERTYPE_REQUEST", workerSagaSetFilterType);
@@ -392,6 +520,7 @@ export function* watchSagaUser() {
   yield takeEvery("LOG_IN_START_REQUEST", workerSagaLogin);
   yield takeEvery("LOG_OUT_REQUEST", workerSagaLogOut);
   yield takeEvery("INIT_REGISTRATION_REQUEST", workerSagaRegistration);
+  // yield takeEvery ("", workerSagaRefreshTokens);
 }
 
 export function* rootSaga() {

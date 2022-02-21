@@ -39,7 +39,7 @@ export const reducer = (state = initialState, action: any) => {
     case "ALL_TODOS_COMPLITED_SUCCESS":
       return {
         ...state,
-        todosArray: [...action.payload.data],
+        todosArray: [...action.payload.todosArray],
         isAllCompleted: action.payload.isAllCompleted,
       };
 
@@ -53,7 +53,8 @@ export const reducer = (state = initialState, action: any) => {
     case "DELETE_ITEMTODO_SUCCESS":
       return {
         ...state,
-        todosArray: [...action.payload],
+        todosArray: [...action.payload.todosArray],
+        isAllCompleted: action.payload.isAllCompleted,
       };
 
     case "CHANGE_ITEMTODO_VALUE_SUCCESS":
@@ -65,7 +66,8 @@ export const reducer = (state = initialState, action: any) => {
     case "CHECK_ITEMTODO_SUCESESS":
       return {
         ...state,
-        todosArray: [...action.payload],
+        todosArray: [...action.payload.todosArray],
+        isAllCompleted: action.payload.isAllCompleted,
       };
     case "SET_FILTERTYPE_SUCCESS":
       return {

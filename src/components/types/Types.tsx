@@ -13,7 +13,7 @@ export type createToDo = {
 
 export type ActionDeleteToDo = {
   type: string;
-  payload: { itemTodoId: string; userId: string; todosArray: ToDo[] };
+  payload: { itemTodoId: string; userId: string; todosArray: ToDo[], isAllCompleted: boolean };
 };
 
 export type ActionChangeItemToDo = {
@@ -23,12 +23,12 @@ export type ActionChangeItemToDo = {
 
 export type ActionCheckItemToDo = {
   type: string;
-  payload: { itemTodoId: string; userId: string, todosArray: ToDo[]};
+  payload: { itemTodoId: string; userId: string; todosArray: ToDo[]; isAllCompleted: boolean };
 };
 
 export type ActionClearCompletedToDo = {
   type: string;
-  payload: { filteredArr: ToDo[], userId: string, filterType: string };
+  payload: { filteredArr: ToDo[]; userId: string; filterType: string };
 };
 
 export type InitState = {
@@ -56,7 +56,7 @@ export type ResponseGenerator = {
   statusText?: string;
 };
 
-export type Action = {
+export type UserAction = {
   type: string;
   payload: Credentials;
 };

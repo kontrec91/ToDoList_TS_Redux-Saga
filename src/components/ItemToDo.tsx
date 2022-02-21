@@ -16,17 +16,9 @@ export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const checkboxHandler = useCallback(() => {
-    console.log("check");
-    //   const newArray = todosArray.map((todo) =>
-    //     todo.id === item.id ? { ...todo, isChecked: !todo.isChecked } : { ...todo }
-    //   );
-    //   setState({
-    //     ...state,
-    //     todosArray: newArray,
-    //     isAllCompleted: !newArray.find((item) => !item.isChecked),
-    //   });
+    const isAllCompleted = !selectUserTodosArray.find((item) => !item.isChecked);
     setIsChecked(!isChecked);
-    dispatch(checkItemToDo(item._id, selectUserId, selectUserTodosArray));
+    dispatch(checkItemToDo(item._id, selectUserId, selectUserTodosArray, isAllCompleted));
   }, [isChecked, item._id, selectUserTodosArray]);
 
   const handleDoubleClick = useCallback(() => {
@@ -44,26 +36,9 @@ export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
   );
 
   const removeItem = useCallback(() => {
-    dispatch(deleteItemToDo(item._id, selectUserId, selectUserTodosArray));
-    //isAllCompleted: !newArray.find((todo) => !todo.isChecked),
+    const  isAllCompleted = !selectUserTodosArray.find((todo) => !todo.isChecked);
+    dispatch(deleteItemToDo(item._id, selectUserId, selectUserTodosArray, isAllCompleted));
   }, [item, selectUserTodosArray]);
-
-  // const removeItem = () => {
-  //   console.log("delete: ", item);
-  //   // const newArray = selectUserTodosArray.filter((todo) => {
-  //   //   if(todo._id !== item._id){
-  //   //     return todo
-  //   //   }
-  //   //   console.log('Deleted todo', todo,item )
-  //   // });
-  //   // console.log("filtered ARRAY:", newArray);
-  //   //   setState({
-  //   //     ...state,
-  //   //     todosArray: newArray,
-  //   //     isAllCompleted: !newArray.find((todo) => !todo.isChecked),
-  //   //   });
-  //   // dispatch(deleteItemToDo(newArray));
-  // };
 
   return (
     <li className="item-text">
