@@ -1,9 +1,9 @@
 import React, { FC, ReactElement } from "react";
 
-import { TodoForm } from "./TodoForm";
-import { Footer } from "./Footer";
-import { TodoList } from "./TodoList";
-import { UserLogOut } from "./UserLogOut";
+import { TodoForm } from "../components/TodoForm";
+import { Footer } from "../components/Footer";
+import { TodoList } from "../components/TodoList";
+import { UserLogOut } from "../components/UserLogOut";
 
 export const ToDoPage: FC = (): ReactElement => {
 

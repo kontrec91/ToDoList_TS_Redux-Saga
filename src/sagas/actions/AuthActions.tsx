@@ -1,4 +1,4 @@
-import { Credentials, ToDo, ActionAddTodo, createToDo, ActionCheckItemToDo } from "../components/types/Types";
+import { Credentials, ToDo, ActionAddTodo, createToDo, ActionCheckItemToDo } from "../../types/Types";
 
 export const InitLogin = (credentials: Credentials) => ({
   type: "LOG_IN_START_REQUEST",

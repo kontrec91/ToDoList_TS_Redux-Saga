@@ -6,4 +6,4 @@ export const CLICK_LOGIN:string = 'CLICK_LOGIN';
 export const CLICK_LOGOUT:string = 'CLICK_LOGOUT';
 export const CLICK_REGISTRATION:string = 'CLICK_REGISTRATION';
 
-
+export const baseUrl = "http://127.0.0.1:3001";

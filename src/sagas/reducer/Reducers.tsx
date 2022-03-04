@@ -1,6 +1,6 @@
-import { InitState } from "../components/types/Types";
-import * as actions from "../constants/constants";
-import * as authActions from "../actions/AuthActions";
+import { InitState } from "../../types/Types";
+import * as actions from "../../constants/constants";
+// import * as authActions from "../sagas/actions/AuthActions";
 
 const initialState: InitState = {
   email: "",
