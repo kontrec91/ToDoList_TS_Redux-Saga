@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { InitState, Credentials } from "../types/Types";
 import { InitLogin, InitRegistration } from "../sagas/actions/AuthActions";
 import { useNavigate } from "react-router-dom";
-import { SelectUserId, state } from "../sagas/selector/selectors";
+import { SelectUserId } from "../sagas/selector/selectors";
 
 const MainPage: FC = (): ReactElement => {
   console.log("store: ", store.getState());
@@ -13,18 +13,44 @@ const MainPage: FC = (): ReactElement => {
   const dispatch = useDispatch();
   const [isShow, setIsShow] = useState<boolean>(false);
 
-  // const selectUserId = useSelector((state: InitState) => state.userId);
+  const userId = useSelector((state: InitState) => state.userId);
+
+  console.log('userId in state, MainPage ', userId);
 
   useEffect(() => {
-    if (SelectUserId(state)) {
-      console.log('go to todopage')
+    if (userId) {
+      console.log('go to todopage');
       navigate("/todopage");
     } else {
       navigate("/");
-      console.log('not to go to todopage')
+      console.log('not to go to todopage');
     }
-    console.log("userid in store", SelectUserId(state));
-  });
+    console.log("userid in store", userId);
+  },[userId]);
+
+
+  // useEffect(() => {
+  //   if (SelectUserId(state)) {
+  //     console.log('go to todopage')
+  //     navigate("/todopage");
+  //   } else {
+  //     navigate("/");
+  //     console.log('not to go to todopage')
+  //   }
+  //   console.log("userid in store", SelectUserId(state));
+  // },[SelectUserId(state)]);//блок кода не срабатывает корректно, о есть не пускает юзера на страницу его тудушек когда он залогинился
+
+
+  // useEffect(() => {
+  //   if (localStorage.authToken) {
+  //     console.log('go to todopage')
+  //     navigate("/todopage");
+  //   } else {
+  //     navigate("/");
+  //     console.log('not to go to todopage')
+  //   }
+  //   console.log("userid in store", SelectUserId(state));
+  // },[localStorage]);//блок кода не срабатывает корректно, о есть не пускает юзера на страницу его тудушек когда он залогинился
 
   const [credentials, setCredentials] = useState<Credentials>({ email: "", password: "", name: "" });
 

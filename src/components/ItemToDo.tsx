@@ -4,9 +4,13 @@ import { PropsItem } from "../types/Types";
 import { useDispatch, useSelector } from "react-redux";
 import { InitState, ToDo } from "../types/Types";
 import { deleteItemToDo, changeItemTodoValue, checkItemToDo } from "../sagas/actions/AuthActions";
-import { SelectUserId, SelectUserTodosArray, SelectFilterType, state} from "../sagas/selector/selectors";
+import { SelectUserId, SelectUserTodosArray, SelectFilterType } from "../sagas/selector/selectors";
 
 export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
+  const userId: string = useSelector(SelectUserId);
+  const todosArray: ToDo[] = useSelector(SelectUserTodosArray);
+  const filterType: string = useSelector(SelectFilterType);
+
   // const selectUserId: string = useSelector((state: InitState) => state.userId);
   // const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
   // const selectFilterType: string = useSelector((state: InitState) => state.filterType);
@@ -17,10 +21,10 @@ export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const checkboxHandler = useCallback(() => {
-    const isAllCompleted = !SelectUserTodosArray(state).find((item) => !item.isChecked);
+    const isAllCompleted = !todosArray.find((item) => !item.isChecked);
     setIsChecked(!isChecked);
-    dispatch(checkItemToDo(item._id, SelectUserId(state), SelectUserTodosArray(state), isAllCompleted));
-  }, [isChecked, item._id, SelectUserTodosArray]);
+    dispatch(checkItemToDo(item._id, userId, todosArray, isAllCompleted));
+  }, [isChecked, item._id, todosArray]);
 
   const handleDoubleClick = useCallback(() => {
     setIsEdit(!isEdit);
@@ -29,17 +33,17 @@ export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
   const handleOnBlur = useCallback(
     (value: string) => {
       if (value) {
-        dispatch(changeItemTodoValue(value, item._id, SelectUserId(state), SelectUserTodosArray(state)));
+        dispatch(changeItemTodoValue(value, item._id, userId, todosArray));
       }
       setIsEdit(false);
     },
-    [item._id, SelectUserTodosArray]
+    [item._id, todosArray]
   );
 
   const removeItem = useCallback(() => {
-    const  isAllCompleted = !SelectUserTodosArray(state).find((todo) => !todo.isChecked);
-    dispatch(deleteItemToDo(item._id, SelectUserId(state), SelectUserTodosArray(state), isAllCompleted));
-  }, [item, SelectUserTodosArray]);
+    const isAllCompleted = !todosArray.find((todo) => !todo.isChecked);
+    dispatch(deleteItemToDo(item._id, userId, todosArray, isAllCompleted));
+  }, [item, todosArray]);
 
   return (
     <li className="item-text">

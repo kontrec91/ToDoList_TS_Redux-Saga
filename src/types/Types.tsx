@@ -84,3 +84,10 @@ export type Props = {
 export type PropsItem = {
   item: ToDo;
 };
+
+
+export type ActionToDo = {
+  filteredArr: ToDo[];
+  userId: string; 
+  filterType: string
+}

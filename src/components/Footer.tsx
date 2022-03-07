@@ -6,7 +6,7 @@ import {
   SelectFilterType,
   SelectUserId,
   SelectUserTodosArray,
-  state,
+  // state,
 } from "../sagas/selector/selectors";
 import { setFilterType, clearCompletedToDo } from "../sagas/actions/AuthActions";
 
@@ -15,48 +15,52 @@ export const Footer: FC = (): ReactElement => {
   // const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
   // const selectFilterType: string = useSelector((state: InitState) => state.filterType);
 
+  const userId: string = useSelector(SelectUserId);
+  const todosArray: ToDo[] = useSelector(SelectUserTodosArray);
+  const filterType: string = useSelector(SelectFilterType);
+
   const dispatch = useDispatch();
 
   const showCountItems = useMemo(() => {
-    const arr = SelectUserTodosArray(state).filter((item) => item.isChecked !== true);
+    const arr = todosArray.filter((item) => item.isChecked !== true);
     return arr.length;
-  }, [SelectUserTodosArray]);
+  }, [todosArray]);
 
   const showClearCompletedButton = useMemo(() => {
-    const isCompleted = SelectUserTodosArray(state).some((item) => item.isChecked === true);
+    const isCompleted = todosArray.some((item) => item.isChecked === true);
     return isCompleted;
-  }, [SelectUserTodosArray]);
+  }, [todosArray]);
 
   const handleSetFilterType = useCallback(
     (value: string) => {
       dispatch(setFilterType(value));
     },
-    [SelectUserTodosArray, SelectFilterType]
+    [todosArray, filterType]
   );
 
   const handlerClearCompleted = useCallback(() => {
-    const fileredArr = SelectUserTodosArray(state).filter((todo) => todo.isChecked === false);
-    dispatch(clearCompletedToDo(fileredArr, SelectUserId(state), "All"));
+    const fileredArr = todosArray.filter((todo) => todo.isChecked === false);
+    dispatch(clearCompletedToDo(fileredArr, userId, "All"));
   }, [SelectUserTodosArray]);
 
   return (
-    <div className={`${!SelectUserTodosArray(state).length ? "hidden" : ""} footer`}>
+    <div className={`${!todosArray.length ? "hidden" : ""} footer`}>
       <span className="number-items-left">{showCountItems} items left</span>
       <button
         onClick={() => handleSetFilterType("All")}
-        className={`${SelectFilterType(state) === "All" ? "active" : ""} all-button`}
+        className={`${filterType === "All" ? "active" : ""} all-button`}
       >
         All
       </button>
       <button
         onClick={() => handleSetFilterType("Active")}
-        className={`${SelectFilterType(state) === "Active" ? "active" : ""} active-button`}
+        className={`${filterType === "Active" ? "active" : ""} active-button`}
       >
         Active
       </button>
       <button
         onClick={() => handleSetFilterType("Completed")}
-        className={`${SelectFilterType(state) === "Completed" ? "active" : ""} completed-button`}
+        className={`${filterType === "Completed" ? "active" : ""} completed-button`}
       >
         Completed
       </button>

@@ -15,6 +15,7 @@ import {
   ActionCheckItemToDo,
   ActionClearCompletedToDo,
   ActionSetFilter,
+  ActionToDo
 } from "./types/Types";
 
 
@@ -180,7 +181,7 @@ function* workerSagaCheckItemToDo(payload: ActionCheckItemToDo) {
   }
 }
 
-function* workerSagaClearCompletedToDo(payload: ActionClearCompletedToDo) {
+function* workerSagaClearCompletedToDo(payload: ActionToDo) {
   const response: ResponseGenerator = yield call(clearCompletedToDo, payload.payload);
   try {
     if (response.status === 200) {
