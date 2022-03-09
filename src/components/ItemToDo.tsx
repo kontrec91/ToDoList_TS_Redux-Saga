@@ -2,18 +2,14 @@ import React, { FC, ReactElement, useState, useCallback } from "react";
 import { ChangeInput } from "./ChangeInput";
 import { PropsItem } from "../types/Types";
 import { useDispatch, useSelector } from "react-redux";
-import { InitState, ToDo } from "../types/Types";
+import { ToDo } from "../types/Types";
 import { deleteItemToDo, changeItemTodoValue, checkItemToDo } from "../sagas/actions/AuthActions";
 import { SelectUserId, SelectUserTodosArray, SelectFilterType } from "../sagas/selector/selectors";
 
 export const ItemToDo: FC<PropsItem> = ({ item }: PropsItem): ReactElement => {
+
   const userId: string = useSelector(SelectUserId);
   const todosArray: ToDo[] = useSelector(SelectUserTodosArray);
-  const filterType: string = useSelector(SelectFilterType);
-
-  // const selectUserId: string = useSelector((state: InitState) => state.userId);
-  // const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
-  // const selectFilterType: string = useSelector((state: InitState) => state.filterType);
 
   const dispatch = useDispatch();
 

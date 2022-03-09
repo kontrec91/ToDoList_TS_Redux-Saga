@@ -49,7 +49,8 @@ export const setFilterType = (value: string) => ({
   payload: value,
 });
 
-export const clearCompletedToDo = (filteredArr: ToDo[], userId: string, filterType: string) => ({
+// export const clearCompletedToDo = (filteredArr: ToDo[], userId: string, filterType: string) => ({
+export const clearCompletedToDo = (filteredArr: ToDo[], filterType: string) => ({
   type: "CLEAR_COMPLETEDTODO_REQUEST",
-  payload: { filteredArr, userId, filterType },
+  payload: { filteredArr, filterType },
 });

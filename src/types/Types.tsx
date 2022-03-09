@@ -13,7 +13,7 @@ export type createToDo = {
 
 export type ActionDeleteToDo = {
   type: string;
-  payload: { itemTodoId: string; userId: string; todosArray: ToDo[], isAllCompleted: boolean };
+  payload: { itemTodoId: string; userId: string; todosArray: ToDo[]; isAllCompleted: boolean };
 };
 
 export type ActionChangeItemToDo = {
@@ -85,9 +85,7 @@ export type PropsItem = {
   item: ToDo;
 };
 
-
 export type ActionToDo = {
-  filteredArr: ToDo[];
-  userId: string; 
-  filterType: string
-}
+  type: string;
+  payload: { filteredArr: ToDo[]; filterType: string };
+};

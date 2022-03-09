@@ -1,30 +1,29 @@
 import axios from "axios";
-// import * as actions from "./constants/constants";
 import { ToDo } from "../types/Types";
 import { baseUrl } from "../constants/constants";
 
-export async function clearCompletedToDo(params: { filteredArr: ToDo[]; userId: string }) {
+// export async function clearCompletedToDo(params: { filteredArr: ToDo[]; userId: string }) {
+export async function clearCompletedToDo(token: string) {
   const resp = await axios
     .post(
-      // `http://127.0.0.1:3001/clear-completed`,
       `${baseUrl+'/clear-completed'}`,
       {},
       {
         headers: {
-          Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+          // Authorization: "Bearer " + `${localStorage.getItem("authToken")}`,
+          Authorization: "Bearer " + `${token}`,
         },
       }
     )
     .then((response) => {
-      // yield put({
-      //   type: "CLEAR_COMPLETEDTODO_SUCESESS",
-      //   payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
-      // });
+      console.log('RESPONSE IN clearCompletedToDo', response);
       return response;
     })
     .catch((error) => {
       if (error.response.status === 401) {
+        console.log('ERROR IN clearCompletedToDo', error);
         // refreshTokens(params.userId, clearCompletedToDo, params);
+        return error;
       }
     });
   return resp;

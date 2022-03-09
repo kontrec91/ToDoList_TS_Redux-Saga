@@ -1,6 +1,6 @@
-import React, { FC, useState, ReactElement, useEffect, useCallback, useMemo } from "react";
+import React, { FC, useState, ReactElement, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { InitState, ToDo } from "../types/Types";
+import { ToDo } from "../types/Types";
 import { getUserTodos, allTodosComplited } from "../sagas/actions/AuthActions";
 import store from "../StoreSaga";
 import { addToDoItem } from "../sagas/actions/AuthActions";
@@ -14,10 +14,6 @@ export const TodoForm: FC = (): ReactElement => {
   const userId: string = useSelector(SelectUserId);
   const todosArray: ToDo[] = useSelector(SelectUserTodosArray);
   const isAllCompleted: boolean = useSelector(SelectIsAllCompleted);
-
-  // const selectUserId: string = useSelector((state: InitState) => state.userId);
-  // const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
-  // const selectIsAllCompleted: boolean = useSelector((state: InitState) => state.isAllCompleted);
 
   const [keyCode, setKeyCode] = useState<string>("");
   const [itemToDoValue, setItemToDoValue] = useState<string>("");
@@ -66,7 +62,7 @@ export const TodoForm: FC = (): ReactElement => {
       setIsSelected(false);
       dispatch(allTodosComplited(userId, isCompleteTodos, newArray));
     }
-  }, [SelectIsAllCompleted, SelectUserTodosArray]);
+  }, [isAllCompleted, todosArray]);
 
   return (
     <div className="header">

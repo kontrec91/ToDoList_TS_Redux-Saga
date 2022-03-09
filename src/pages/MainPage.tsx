@@ -1,5 +1,4 @@
 import React, { FC, ReactElement, useEffect, useState } from "react";
-import * as actions from "../sagas/actions/AuthActions";
 import store from "../StoreSaga";
 import { useDispatch, useSelector } from "react-redux";
 import { InitState, Credentials } from "../types/Types";
@@ -13,44 +12,17 @@ const MainPage: FC = (): ReactElement => {
   const dispatch = useDispatch();
   const [isShow, setIsShow] = useState<boolean>(false);
 
-  const userId = useSelector((state: InitState) => state.userId);
-
-  console.log('userId in state, MainPage ', userId);
+  const userId = useSelector(SelectUserId);
 
   useEffect(() => {
     if (userId) {
-      console.log('go to todopage');
       navigate("/todopage");
     } else {
       navigate("/");
-      console.log('not to go to todopage');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem("refreshToken");
     }
-    console.log("userid in store", userId);
   },[userId]);
-
-
-  // useEffect(() => {
-  //   if (SelectUserId(state)) {
-  //     console.log('go to todopage')
-  //     navigate("/todopage");
-  //   } else {
-  //     navigate("/");
-  //     console.log('not to go to todopage')
-  //   }
-  //   console.log("userid in store", SelectUserId(state));
-  // },[SelectUserId(state)]);//блок кода не срабатывает корректно, о есть не пускает юзера на страницу его тудушек когда он залогинился
-
-
-  // useEffect(() => {
-  //   if (localStorage.authToken) {
-  //     console.log('go to todopage')
-  //     navigate("/todopage");
-  //   } else {
-  //     navigate("/");
-  //     console.log('not to go to todopage')
-  //   }
-  //   console.log("userid in store", SelectUserId(state));
-  // },[localStorage]);//блок кода не срабатывает корректно, о есть не пускает юзера на страницу его тудушек когда он залогинился
 
   const [credentials, setCredentials] = useState<Credentials>({ email: "", password: "", name: "" });
 

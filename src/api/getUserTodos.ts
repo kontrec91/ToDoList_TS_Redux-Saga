@@ -3,7 +3,6 @@ import { baseUrl } from "../constants/constants";
 
 export async function getUserTodos(userId: string) {
     const response = await axios
-      // .get(`http://127.0.0.1:3001/get-data`, {
         .get(`${baseUrl+'/get-data'}`, {
 
         headers: {

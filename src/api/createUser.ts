@@ -12,9 +12,7 @@ export async function createUser(userState: Credentials) {
     const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
 
     const resp = await axios
-      // .post("http://127.0.0.1:3001/reg", {
         .post(`${baseUrl+"/reg"}`, {
-
         email: userState.email,
         password: encryptedPass,
         name: userState.name,

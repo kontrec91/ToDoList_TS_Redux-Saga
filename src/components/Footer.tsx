@@ -6,16 +6,12 @@ import {
   SelectFilterType,
   SelectUserId,
   SelectUserTodosArray,
-  // state,
 } from "../sagas/selector/selectors";
 import { setFilterType, clearCompletedToDo } from "../sagas/actions/AuthActions";
 
 export const Footer: FC = (): ReactElement => {
-  // const selectUserId: string = useSelector((state: InitState) => state.userId);
-  // const selectUserTodosArray: ToDo[] = useSelector((state: InitState) => state.todosArray);
-  // const selectFilterType: string = useSelector((state: InitState) => state.filterType);
 
-  const userId: string = useSelector(SelectUserId);
+  // const userId: string = useSelector(SelectUserId);
   const todosArray: ToDo[] = useSelector(SelectUserTodosArray);
   const filterType: string = useSelector(SelectFilterType);
 
@@ -40,8 +36,9 @@ export const Footer: FC = (): ReactElement => {
 
   const handlerClearCompleted = useCallback(() => {
     const fileredArr = todosArray.filter((todo) => todo.isChecked === false);
-    dispatch(clearCompletedToDo(fileredArr, userId, "All"));
-  }, [SelectUserTodosArray]);
+    // dispatch(clearCompletedToDo(fileredArr, userId, "All"));
+    dispatch(clearCompletedToDo(fileredArr, "All"));
+  }, [todosArray]);
 
   return (
     <div className={`${!todosArray.length ? "hidden" : ""} footer`}>

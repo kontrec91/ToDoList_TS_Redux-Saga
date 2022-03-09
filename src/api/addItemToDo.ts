@@ -6,7 +6,6 @@ import { baseUrl } from "../constants/constants";
 export async function addItemToDo(params: { itemTodo: createToDo; isAllCompleted: boolean; userId: string }) {
   const resp = await axios
     .post(
-      // "http://127.0.0.1:3001/add-data",
       `${baseUrl+"/add-data"}`,
       {
         itemTodo: params.itemTodo,

@@ -1,6 +1,6 @@
 import "./App.css";
 import "./css/style.css";
-import React, { FC, ReactElement, useEffect} from "react";
+import React, { FC, ReactElement } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./StoreSaga";

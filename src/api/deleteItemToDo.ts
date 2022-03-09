@@ -4,7 +4,6 @@ import { baseUrl } from "../constants/constants";
 export async function deleteItemToDo(params: { itemTodoId: string; userId: string }) {
   const resp = await axios
     .post(
-      // `http://127.0.0.1:3001/delete-data`,
       `${baseUrl + "/delete-data"}`,
       {
         itemTodoId: params.itemTodoId,

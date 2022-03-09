@@ -31,20 +31,6 @@ import {clearCompletedToDo} from "./api/clearCompletedToDo";
 import {logOutUser} from "./api/logOutUser";
 
 
-
-
-
-// type setUserLoginType = (userState: Credentials) => Promise<string>;
-
-// type setUserLoginType = (userState: Credentials) => Promise<string>;
-
-// const userLogin: setUserLoginType = async (userState) => {
-
-
-
-
-
-
 function* workerSagaRegistration(payload: UserAction) {
   try {
     const res: string = yield call(createUser, payload.payload);
@@ -182,7 +168,9 @@ function* workerSagaCheckItemToDo(payload: ActionCheckItemToDo) {
 }
 
 function* workerSagaClearCompletedToDo(payload: ActionToDo) {
-  const response: ResponseGenerator = yield call(clearCompletedToDo, payload.payload);
+//   const response: ResponseGenerator = yield call(clearCompletedToDo, payload.payload);
+  console.log('authToken start')
+  const response: ResponseGenerator = yield call(clearCompletedToDo, localStorage.authToken);
   try {
     if (response.status === 200) {
       yield put({
@@ -190,23 +178,25 @@ function* workerSagaClearCompletedToDo(payload: ActionToDo) {
         payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
       });
     }
-    if (response.status === 401) {
-      const resp = refreshTokens(payload.payload.userId, clearCompletedToDo, payload.payload);
-      // ЗАПУСКАТЬ ТУТ refreshTokens А НЕ ВНУТРИ clearCompletedToDo
-      // if (resp:any) {
-      //   yield put({
-      //     type: "CLEAR_COMPLETEDTODO_SUCESESS",
-      //     payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
-      //   });
-      // }
-    }
-  } catch (error: any) {
-    yield put({ type: "CLEAR_COMPLETEDTODO_FAILED" });
-
-    // if (error.response.status === 401) {
-    //   console.log("params.userId!!!!!!!!!!!!!!!!!!!!!!!!",  payload.payload.userId);
-    //    refreshTokens( payload.payload.userId, clearCompletedToDo,  payload.payload);
+    // if (response.status === 401) {
+    //   console.log('STATUS 401! IN workerSagaClearCompletedToDo ')
+    //   // const resp = refreshTokens(payload.payload.userId, clearCompletedToDo, payload.payload);
+    //   // ЗАПУСКАТЬ ТУТ refreshTokens А НЕ ВНУТРИ clearCompletedToDo
+    //   // if (resp:any) {
+    //   //   yield put({
+    //   //     type: "CLEAR_COMPLETEDTODO_SUCESESS",
+    //   //     payload: { filteredArr: payload.payload.filteredArr, filterType: payload.payload.filterType },
+    //   //   });
+    //   // }
     // }
+  } catch (error: any) {
+    // yield put({ type: "CLEAR_COMPLETEDTODO_FAILED" });
+    if (error.response.status === 401) {
+      // console.log("params.userId!!!!!!!!!!!!!!!!!!!!!!!!",  payload.payload.userId);
+      //  refreshTokens( payload.payload.userId, clearCompletedToDo,  payload.payload);
+      console.log('authToken failed, refreshToken start');
+      const response: ResponseGenerator = yield call(clearCompletedToDo, localStorage.refreshToken);
+    } 
   }
 }
 

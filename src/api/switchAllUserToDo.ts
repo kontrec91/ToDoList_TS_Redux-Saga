@@ -4,7 +4,6 @@ import { baseUrl } from "../constants/constants";
 export async function switchAllUserToDo(params: { userId: string; isAllCompleted: boolean }) {
   const resp = await axios
     .post(
-      // `http://127.0.0.1:3001/switch-all`,
       `${baseUrl + "/switch-all"}`,
       {
         isChecked: params.isAllCompleted,

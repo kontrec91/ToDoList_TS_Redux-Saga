@@ -8,14 +8,11 @@ import { Credentials } from "../types/Types";
 export async function userLogin(userState: Credentials) {
 
   if (userState.email && userState.name && userState.password) {
+    
     const hashPass = hash({ password: userState.password, key: `${process.env.REACT_APP_SECRET_KEY}`! });
-
     const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
-    // const bytes = CryptoJS.AES.decrypt(encryptedPass, `${process.env.REACT_APP_SECRET_KEY}`);//????
-    // const decryptPassword = bytes.toString(CryptoJS.enc.Utf8);//???
 
     const resp = await axios
-      // .post("http://127.0.0.1:3001/login", {
       .post(`${baseUrl + "/login"}`, {
         email: userState.email,
         password: encryptedPass,
@@ -25,6 +22,7 @@ export async function userLogin(userState: Credentials) {
         (response) => {
           console.log("response in userLogin", response.data);
           localStorage.setItem("authToken", response.data.token.accesToken);
+          localStorage.setItem("refreshToken", response.data.token.refreshToken);
           return response.data.userID;
         },
         (error) => {
