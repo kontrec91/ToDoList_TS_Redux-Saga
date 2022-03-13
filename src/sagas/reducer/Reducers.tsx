@@ -84,5 +84,6 @@ export const reducer = (state = initialState, action: any) => {
 
     default:
       return state;
+      // return initialState;
   }
 };

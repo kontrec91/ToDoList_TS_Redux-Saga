@@ -5,18 +5,26 @@ import hash from "object-hash";
 import { baseUrl } from "../constants/constants";
 
 import { Credentials } from "../types/Types";
+import $api from "../sagas";
 
 export async function createUser(userState: Credentials) {
   if (userState.email && userState.name && userState.password) {
     const hashPass = hash({ password: userState.password, key: `${process.env.REACT_APP_SECRET_KEY}`! });
     const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
 
-    const resp = await axios
-        .post(`${baseUrl+"/reg"}`, {
-        email: userState.email,
-        password: encryptedPass,
-        name: userState.name,
-      })
+    // const resp = await axios
+    //     .post(`${baseUrl+"/reg"}`, {
+    //     email: userState.email,
+    //     password: encryptedPass,
+    //     name: userState.name,
+    //   })
+
+    const response = await $api
+    .post("/reg", {
+    email: userState.email,
+    password: encryptedPass,
+    name: userState.name,
+  })
       .then(
         (response) => {
           localStorage.setItem("authToken", response.data.token);
@@ -27,7 +35,7 @@ export async function createUser(userState: Credentials) {
           console.log("create User is failed", error);
         }
       );
-    return resp;
+    return response;
   } else {
     alert("Some fields are empty. Please fill it");
   }

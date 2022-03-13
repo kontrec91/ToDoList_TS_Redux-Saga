@@ -2,6 +2,7 @@ import axios from "axios";
 import CryptoJS from "crypto-js";
 import hash from "object-hash";
 import { baseUrl } from "../constants/constants";
+import $api from "../sagas";
 
 import { Credentials } from "../types/Types";
 
@@ -12,8 +13,15 @@ export async function userLogin(userState: Credentials) {
     const hashPass = hash({ password: userState.password, key: `${process.env.REACT_APP_SECRET_KEY}`! });
     const encryptedPass = CryptoJS.AES.encrypt(hashPass, `${process.env.REACT_APP_SECRET_KEY}`!).toString();
 
-    const resp = await axios
-      .post(`${baseUrl + "/login"}`, {
+    // const response = await axios
+    //   .post(`${baseUrl + "/login"}`, {
+    //     email: userState.email,
+    //     password: encryptedPass,
+    //     name: userState.name,
+    //   })
+
+    const response = await $api
+      .post("/login", {
         email: userState.email,
         password: encryptedPass,
         name: userState.name,
@@ -29,7 +37,7 @@ export async function userLogin(userState: Credentials) {
           console.log("user Login is failed", error);
         }
       );
-    return resp;
+    return response;
   } else {
     alert("Some fields are empty. Please fill it");
   }

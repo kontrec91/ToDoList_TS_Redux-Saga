@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 // import * as actions from "./constants/constants";
 import { call, put, takeEvery, all } from "redux-saga/effects";
 
@@ -214,43 +214,43 @@ function* workerSagaSetFilterType(payload: ActionSetFilter) {
   }
 }
 
-async function refreshTokens(userId: string, callback: any, params: any) {
-  //after run code reducer must know what to do
-  // async function refreshTokens(params: {userId: string, callback: any, params: any}) {
-  const resp = await axios
-    .post("http://127.0.0.1:3001/refresh", {
-      userId: userId,
-    })
-    .then(
-      async (response) => {
-        localStorage.setItem("authToken", response.data.accesToken);
-        if (callback) {
-          await callback(params);
-        }
-        // return response.data.userID;
-      },
-      (error) => {
-      }
-    );
-  return resp;
-}
+// async function refreshTokens(userId: string, callback: any, params: any) {
+//   //after run code reducer must know what to do
+//   // async function refreshTokens(params: {userId: string, callback: any, params: any}) {
+//   const resp = await axios
+//     .post("http://127.0.0.1:3001/refresh", {
+//       userId: userId,
+//     })
+//     .then(
+//       async (response) => {
+//         localStorage.setItem("authToken", response.data.accesToken);
+//         if (callback) {
+//           await callback(params);
+//         }
+//         // return response.data.userID;
+//       },
+//       (error) => {
+//       }
+//     );
+//   return resp;
+// }
 
-function* workerSagaRefreshTokens(userId: string) {
-  //////////&&&&&&&&&&&&&&&&????????????????? need login here
-  const response: ResponseGenerator = yield call(refreshTokens, userId, null, null);
-  try {
-    if (response) {
-      yield put({
-        type: "CREATE_TOKENS_SUCESESS",
-        payload: {},
-      });
-    } else {
-      yield put({ type: "CREATE_TOKENS_FAILED" });
-      throw new Error("Could not get response");
-    }
-  } catch (error) {
-  }
-}
+// function* workerSagaRefreshTokens(userId: string) {
+//   //////////&&&&&&&&&&&&&&&&????????????????? need login here
+//   const response: ResponseGenerator = yield call(refreshTokens, userId, null, null);
+//   try {
+//     if (response) {
+//       yield put({
+//         type: "CREATE_TOKENS_SUCESESS",
+//         payload: {},
+//       });
+//     } else {
+//       yield put({ type: "CREATE_TOKENS_FAILED" });
+//       throw new Error("Could not get response");
+//     }
+//   } catch (error) {
+//   }
+// }
 
 export function* watchSagaTodos() {
   yield takeEvery("GET_USER_DATA_REQUEST", workerSagaGetUserTodos);
